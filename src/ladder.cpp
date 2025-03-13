@@ -14,10 +14,10 @@ bool is_adjacent(const string& word1, const string& word2) {
 }
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
-    if (begin_word == end_word) error (begin_word, end_word, "are equal.");
+    if (begin_word == end_word) error(begin_word, end_word, "are equal.");
     
     queue<vector<string>> ladder_queue;
-    ladder_queue.push([begin_word]);
+    ladder_queue.push({begin_word});
     set<string> visited;
     visited.insert(begin_word);
 
@@ -34,7 +34,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
                     new_ladder.push_back(word);
 
                     if (word == end_word) return new_ladder;
-                    ladder_queue.push(new_ladder)
+                    ladder_queue.push(new_ladder);
                 }
             }
         }
@@ -47,7 +47,7 @@ void load_words(set<string> & word_list, const string& file_name) {
     std::ifstream file(file_name);
     string line;
     while (getline(file, line))
-        word_list.insert(word);
+        word_list.insert(line);
     file.close();
 }
 
