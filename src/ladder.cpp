@@ -11,23 +11,47 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     int str1_len = str1.length(), str2_len = str2.length();
     if (abs(str1_len - str2_len) > d) return false;
 
-    vector<vector<int>> matrix(str1_len + 1, vector<int>(str2_len + 1));
+    int differences = 0, i = 0, j = 0;
 
-    for (int i = 0; i <= str1_len; ++i) {
-        for (int j = 0; j <= str2_len; ++j) {
-            if (i == 0)
-                matrix[i][j] = j;  
-            else if (j == 0)
-                matrix[i][j] = i;
+    while (i < str1_len && j < str2_len) {
+        if (str1[i] != str2[j]) {
+            differences++;
+            if (differences > d) return false;
 
-            else if (str1[i - 1] == str2[j - 1])
-                matrix[i][j] = matrix[i-1][j-1];
+            if (str1_len > str2_len) i++;
+            else if (str1_len < str2_len) j++;
+            else {
+                i++;
+                j++;
+            }
+        }
 
-            else
-                matrix[i][j] = 1 + min({matrix[i][j-1], matrix[i-1][j] , matrix[i-1][j-1]});
+        else {
+            i++;
+            j++;
         }
     }
-    return matrix[str1_len][str2_len] <= d;
+
+    differences += abs(str1_len - i) + abs(str2_len - j);
+    return differences <= d;
+
+    // vector<vector<int>> matrix(str1_len + 1, vector<int>(str2_len + 1));
+
+    // for (int i = 0; i <= str1_len; ++i) {
+    //     for (int j = 0; j <= str2_len; ++j) {
+    //         if (i == 0)
+    //             matrix[i][j] = j;  
+    //         else if (j == 0)
+    //             matrix[i][j] = i;
+
+    //         else if (str1[i - 1] == str2[j - 1])
+    //             matrix[i][j] = matrix[i-1][j-1];
+
+    //         else
+    //             matrix[i][j] = 1 + min({matrix[i][j-1], matrix[i-1][j] , matrix[i-1][j-1]});
+    //     }
+    // }
+    // return matrix[str1_len][str2_len] <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
@@ -57,6 +81,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
                 if (word == end_word) return new_ladder;
 
                 ladder_queue.push(new_ladder);
+                // visited.insert(word);
             }
         }
     }
