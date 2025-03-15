@@ -34,70 +34,33 @@ bool is_adjacent(const string& word1, const string& word2) {
     return edit_distance_within(word1, word2, 1);
 }
 
-// vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
-//     if (begin_word == end_word || word_list.find(end_word) == word_list.end()) return {begin_word};
-
-//     queue<vector<string>> ladder_queue;
-//     ladder_queue.push({begin_word});
-//     map<string, bool> visited;
-//     for (string word: word_list) 
-//         visited[word] = false;
-//     visited[begin_word] = true;
-
-//     while (!(ladder_queue.empty())) {
-//         vector<string> ladder = ladder_queue.front();
-//         ladder_queue.pop();
-//         string last_word = ladder.back();
-
-//         for (string word : word_list) {
-//             if (is_adjacent(last_word, word) && visited[word] == false) {
-//                 cout << "DEBUG: " << last_word << " " << word << endl;
-//                 visited[word] = true;
-//                 vector<string> new_ladder = ladder;
-//                 new_ladder.push_back(word);
-
-//                 if (word == end_word) return new_ladder;
-
-//                 ladder_queue.push(new_ladder);
-//             }
-//         }
-//     }
-//     return {"No word ladder found."};
-// }
-
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
-    if (begin_word == end_word) return {begin_word};
-    if (word_list.find(end_word) == word_list.end()) return {};
+    if (begin_word == end_word || word_list.find(end_word) == word_list.end()) return {};
 
-    queue<pair<string, vector<string>>> q;
-    unordered_set<string> visited;  // Set to keep track of visited words
-    q.push({begin_word, {begin_word}});
+    queue<vector<string>> ladder_queue;
+    ladder_queue.push({begin_word});
+    set<string> visited;
     visited.insert(begin_word);
 
-    while (!q.empty()) {
-        auto current = q.front();
-        q.pop();
-        string currentWord = current.first;
-        vector<string> path = current.second;
+    while (!(ladder_queue.empty())) {
+        vector<string> ladder = ladder_queue.front();
+        ladder_queue.pop();
+        string last_word = ladder.back();
 
-        for (const string& word : word_list) {
-            // Check if the word is adjacent and hasn't been visited
-            if (is_adjacent(currentWord, word) && visited.find(word) == visited.end()) {
-                // If the new word is the end word, return the path
-                if (word == end_word) {
-                    path.push_back(word);
-                    return path;
-                }
-
-                // Otherwise, add the new word to the queue and mark it as visited
-                vector<string> newPath = path;  // Copy current path
-                newPath.push_back(word);  // Add new word to the path
-                q.push({word, newPath});
+        for (string word : word_list) {
+            if (is_adjacent(last_word, word) && visited.find(word) == visited.end()) {
+                cout << "DEBUG: " << last_word << " " << word << endl;
                 visited.insert(word);
+                vector<string> new_ladder = ladder;
+                new_ladder.push_back(word);
+
+                if (word == end_word) return new_ladder;
+
+                ladder_queue.push(new_ladder);
             }
         }
     }
-    return {"No word ladder found."};  // Return an empty list if no path exists
+    return {};
 }
 
 
@@ -110,7 +73,7 @@ void load_words(set<string> & word_list, const string& file_name) {
 }
 
 void print_word_ladder(const vector<string>& ladder) {
-    if (ladder[0] == "No word ladder found.") cout << ladder[0];
+    if (ladder.size() == 0) cout << "No word ladder found.";
     else {
         cout << "Word ladder found: ";
         for (string s : ladder) 
