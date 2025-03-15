@@ -3,7 +3,7 @@
 int main() {
     // verify_word_ladder();
 
-    // bool test = is_adjacent("work", "wok");
+    // bool test = is_adjacent("were", "werekk");
     // cout << test << endl;
     set<string> word_list;
     load_words(word_list, "src/words.txt");
